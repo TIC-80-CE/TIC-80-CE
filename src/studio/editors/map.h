@@ -48,7 +48,9 @@ struct Map
     {
         bool grid;
         bool draw;
+        bool random;
         tic_point start;
+        tic_point current;
     } canvas;
 
     struct
