@@ -60,8 +60,9 @@
 	shallow = true
 [submodule "vendor/quickjs"]
 	path = vendor/quickjs
-	url = https://github.com/nesbox/quickjs.git
+	url = https://github.com/TIC-80-CE/quickjs.git
 	shallow = true
+	branch = patch
 [submodule "vendor/naett"]
 	path = vendor/naett
 	url = https://github.com/erkkah/naett.git
