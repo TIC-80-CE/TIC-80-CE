@@ -8,6 +8,7 @@
     <title>TIC-80 tiny computer</title>
 
     <style type="text/css">
+        body { background: var(--tic-background) }
         #game-frame > div { font-size: 44px; font-family: monospace; font-weight: bold; }
 
         /* You can set custom dimensions here */
@@ -19,7 +20,7 @@
 
     <link rel="stylesheet" href="buttons.css">
 </head>
-<body style="--tic-background: #1a1c2c; --tic-buttons: url('buttons.png'); --tic-osc-aspect-ratio: 3; margin:0; padding:0; background: var(--tic-background)">
+<body style="--tic-background: #1a1c2c; --tic-buttons: url('buttons.png'); --tic-osc-aspect-ratio: 1; --tic-screen-aspect-ratio: 1; margin:0; padding:0;">
 
     <div class="game" style="margin: 0; position: relative;">
 
@@ -29,7 +30,7 @@
             </div>
         </div>
 
-        <div id="on-screen-controls">
+        <div id="on-screen-controls" style="opacity: 0.5;">
             <div id="dpad-region">
                 <div class="osc-button" style="--tic-button-index: 0; top: 0;"></div>
                 <div class="osc-button" style="--tic-button-index: 1; bottom: 0;"></div>
@@ -43,9 +44,12 @@
                 <div class="osc-button" style="--tic-button-index: 6; left: 0;"></div>
                 <div class="osc-button" style="--tic-button-index: 7; top: 0;"></div>
             </div>
+
+            <div class="osc-button osc-top" style="--tic-button-index: 8; left: 0;"></div>
+            <div class="osc-button osc-top" style="--tic-button-index: 9; right: 0;"></div>
         </div>
 
-        <canvas style="width: 100%; height: 100%; margin: 0 auto; display: block; image-rendering: pixelated;" id="canvas" oncontextmenu="event.preventDefault()" onmousedown="window.focus()" tabindex="0"></canvas>
+        <canvas style="background: var(--tic-background); width: 100%; height: 100%; margin: 0 auto; display: block; image-rendering: pixelated;" id="canvas" oncontextmenu="event.preventDefault()" onmousedown="window.focus()" tabindex="0"></canvas>
     </div>
 
     <script type="text/javascript">
@@ -110,22 +114,44 @@
         const displayStyle = window.getComputedStyle(gameFrame).display;
 
         function onScreenControls() {
-            function adjustAspectRatio() {
-                // Sometimes inner sizes can be larger than the device's screen, this prevents that.
-                // Might remove ternary if I'm confident that won't happen
-                let width = (window.innerWidth < window.outerWidth) ? window.innerWidth : window.outerWidth;
-                let height = (window.innerHeight < window.outerHeight) ? window.innerHeight : window.outerHeight;
+            if (navigator.maxTouchPoints > 0) {
+                document.getElementById("canvas").style.removeProperty("height");
 
-                let xOscRatio = width / 48;
-                let yOscRatio = height / 48;
+                function hideOnScreenControls() {
+                    document.getElementById("on-screen-controls").style.opacity = 0;
+                }
 
-                let oscRatio = (xOscRatio < yOscRatio) ? xOscRatio : yOscRatio;
+                let timeoutHandle;
+                function resetHideOnScreenControlsTimeout() {
+                    document.getElementById("on-screen-controls").style.opacity = 0.5;
+                    timeoutHandle = window.setTimeout(hideOnScreenControls, 10000);
+                }
+                resetHideOnScreenControlsTimeout();
 
-                document.body.style.setProperty("--tic-osc-aspect-ratio", oscRatio);
+                function adjustAspectRatio() {
+                    // Sometimes inner sizes can be larger than the device's screen, this prevents that.
+                    // Might remove ternary if I'm confident that won't happen
+                    let width = (window.innerWidth < window.outerWidth) ? window.innerWidth : window.outerWidth;
+                    let height = (window.innerHeight < window.outerHeight) ? window.innerHeight : window.outerHeight;
+
+                    let xOscRatio = width / 48;
+                    let yOscRatio = height / 48;
+
+                    let xScreenRatio = width / 256;
+                    let yScreenRatio = height / 144;
+
+                    let oscRatio = (xOscRatio < yOscRatio) ? xOscRatio : yOscRatio;
+                    let screenRatio = (xScreenRatio < yScreenRatio) ? xScreenRatio : yScreenRatio;
+
+                    document.body.style.setProperty("--tic-osc-aspect-ratio", oscRatio);
+                    document.body.style.setProperty("--tic-screen-aspect-ratio", screenRatio);
+                }
+
+                adjustAspectRatio();
+                window.addEventListener("resize", adjustAspectRatio);
+            } else {
+                document.getElementById("on-screen-controls").remove();
             }
-
-            adjustAspectRatio();
-            window.addEventListener("resize", adjustAspectRatio);
         }
 
         if (displayStyle === 'none') 
