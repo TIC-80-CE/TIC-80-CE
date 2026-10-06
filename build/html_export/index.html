@@ -122,7 +122,7 @@
         const displayStyle = window.getComputedStyle(gameFrame).display;
 
         function onScreenControls() {
-            if (navigator.maxTouchPoints > 0 || true) {
+            if (navigator.maxTouchPoints > 0) {
                 const canvas = document.getElementById("canvas");
                 canvas.style.removeProperty("height");
                 const osc = document.getElementById("on-screen-controls");
