@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>TIC-80 tiny computer</title>
+
+    <style type="text/css">
+        body { background: var(--tic-background) }
+        #game-frame > div { font-size: 44px; font-family: monospace; font-weight: bold; }
+
+        /* You can set custom dimensions here */
+        .game { width: 100vw; height: 100vh; width: 100dvw; height: 100dvh; }
+
+        /* Uncomment to remove the frame on top of the canvas and start the game directly */
+        /* #game-frame { display: none; } */
+    </style>
+
+    <link rel="stylesheet" href="buttons.css">
+</head>
+<body style="--tic-background: #1a1c2c; --tic-buttons: url('buttons.png'); --tic-osc-aspect-ratio: 1; --tic-screen-aspect-ratio: 1; margin:0; padding:0;">
+
+    <div class="game" style="margin: 0; position: relative;">
+
+        <div id="game-frame" style="z-index: 1; cursor: pointer; position: absolute; margin: 0 auto; opacity: 1; background: var(--tic-background); width: 100%; height: 100%;">
+            <div style="text-align: center; color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+                <p style="margin: 0;">- CLICK TO PLAY -</p>
+            </div>
+        </div>
+
+        <div id="on-screen-controls" style="opacity: 0.5;">
+            <div id="dpad-region">
+                <div id="osc-up" class="osc-button" data-tic-button="up" style="--tic-button-index: 0; top: 0;"></div>
+                <div id="osc-down" class="osc-button" data-tic-button="down" style="--tic-button-index: 1; bottom: 0;"></div>
+                <div id="osc-left" class="osc-button" data-tic-button="left" style="--tic-button-index: 2; left: 0;"></div>
+                <div id="osc-right" class="osc-button" data-tic-button="right" style="--tic-button-index: 3; right: 0;"></div>
+                <div class="osc-button" data-osc-includes="osc-right osc-up" style="opacity: 0; top: 0; right: 0;"></div>
+                <div class="osc-button" data-osc-includes="osc-right osc-down" style="opacity: 0; bottom: 0; right: 0;"></div>
+                <div class="osc-button" data-osc-includes="osc-left osc-up" style="opacity: 0; top: 0; left: 0;"></div>
+                <div class="osc-button" data-osc-includes="osc-left osc-down" style="opacity: 0; bottom: 0; left: 0;"></div>
+            </div>
+
+            <div id="face-region">
+                <div id="osc-a" class="osc-button" data-tic-button="a" style="--tic-button-index: 4; bottom: 0;"></div>
+                <div id="osc-b" class="osc-button" data-tic-button="b" style="--tic-button-index: 5; right: 0;"></div>
+                <div id="osc-x" class="osc-button" data-tic-button="x" style="--tic-button-index: 6; left: 0;"></div>
+                <div id="osc-y" class="osc-button" data-tic-button="y" style="--tic-button-index: 7; top: 0;"></div>
+                <div class="osc-button" data-osc-includes="osc-b osc-y" style="opacity: 0; top: 0; right: 0;"></div>
+                <div class="osc-button" data-osc-includes="osc-b osc-a" style="opacity: 0; bottom: 0; right: 0;"></div>
+                <div class="osc-button" data-osc-includes="osc-x osc-y" style="opacity: 0; top: 0; left: 0;"></div>
+                <div class="osc-button" data-osc-includes="osc-x osc-a" style="opacity: 0; bottom: 0; left: 0;"></div>
+            </div>
+
+            <div class="osc-button osc-top" data-tic-button="esc" style="--tic-button-index: 8; left: 0;"></div>
+            <div class="osc-button osc-top" data-tic-button="fullscreen" style="--tic-button-index: 9; right: 0;"></div>
+        </div>
+
+        <canvas style="background: var(--tic-background); width: 100%; height: 100%; margin: 0 auto; display: block; image-rendering: pixelated;" id="canvas" oncontextmenu="event.preventDefault()" onmousedown="window.focus()" tabindex="0"></canvas>
+    </div>
+
+    <script type="text/javascript">
+        var Module = {canvas: document.getElementById('canvas'), arguments:['cart.tic']};
+
+        // Safari/WebKit-only: remap Arrow keys with location 3 (numpad) to location 0.
+        (function(){
+            const ua = navigator.userAgent || '';
+            const isWebKit = /AppleWebKit/i.test(ua);
+            if (!isWebKit) return;
+
+            const synthesizeArrowWithLocation0 = (orig) => {
+                try {
+                    const ev = new KeyboardEvent(orig.type, {
+                        key: orig.key,
+                        code: orig.code,
+                        location: 0,
+                        repeat: orig.repeat,
+                        ctrlKey: orig.ctrlKey,
+                        shiftKey: orig.shiftKey,
+                        altKey: orig.altKey,
+                        metaKey: orig.metaKey,
+                        bubbles: true,
+                        cancelable: true,
+                    });
+                    Object.defineProperty(ev, 'which', { get: () => orig.which });
+                    Object.defineProperty(ev, 'keyCode', { get: () => orig.keyCode });
+                    return ev;
+                } catch { return null; }
+            };
+
+            const remapArrowLocationCapture = (e) => {
+                const isArrow = (e.key && e.key.startsWith('Arrow')) || (e.code && e.code.startsWith('Arrow'));
+                if (!isArrow) return;
+                if (e.location === 3) {
+                    const syn = synthesizeArrowWithLocation0(e);
+                    if (syn) {
+                        e.stopImmediatePropagation();
+                        e.preventDefault();
+                        (e.target || document.getElementById('canvas')).dispatchEvent(syn);
+                    }
+                }
+            };
+
+            ['keydown','keyup'].forEach(t => document.addEventListener(t, remapArrowLocationCapture, true));
+        })();
+
+        // Prevent page scrolling while the game canvas is focused
+        (function(){
+            const canvasEl = document.getElementById('canvas');
+            const preventArrowDefault = (e) => {
+                const key = e.key || e.code;
+                const kc = e.keyCode || e.which;
+                const isArrow = (key && ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(key)) || (kc >= 37 && kc <= 40);
+                if (isArrow && document.activeElement === canvasEl) e.preventDefault();
+            };
+            document.addEventListener('keydown', preventArrowDefault, { passive: false });
+            canvasEl.addEventListener('keydown', preventArrowDefault, { passive: false });
+        })();
+
+        const gameFrame = document.getElementById('game-frame')
+        const displayStyle = window.getComputedStyle(gameFrame).display;
+
+        function onScreenControls() {
+            if (navigator.maxTouchPoints > 0) {
+                const canvas = document.getElementById("canvas");
+                canvas.style.removeProperty("height");
+                const osc = document.getElementById("on-screen-controls");
+
+                const keyMap = {
+                    up:    { key: "ArrowUp",    code: "ArrowUp",    keyCode: 38 },
+                    down:  { key: "ArrowDown",  code: "ArrowDown",  keyCode: 40 },
+                    left:  { key: "ArrowLeft",  code: "ArrowLeft",  keyCode: 37 },
+                    right: { key: "ArrowRight", code: "ArrowRight", keyCode: 39 },
+                    a:     { key: "z",          code: "KeyZ",       keyCode: 90 },
+                    b:     { key: "x",          code: "KeyZ",       keyCode: 88 },
+                    x:     { key: "a",          code: "KeyA",       keyCode: 65 },
+                    y:     { key: "s",          code: "KeyS",       keyCode: 83 },
+                    esc:   { key: "Escape",     code: "Escape",     keyCode: 27 },
+                };
+
+                let currentActiveButtons = [];
+
+                function sendInput(buttonName, isPressed) {
+                    if (isPressed && buttonName === "fullscreen") {
+                        if (!document.fullscreenElement) {
+                            document.body.requestFullscreen();
+                        } else {
+                            if (document.exitFullscreen) {
+                                document.exitFullscreen();
+                            }
+                        }
+
+                        return;
+                    }
+
+                    const key = keyMap[buttonName];
+                    if (!key) return;
+
+                    const eventType = isPressed ? "keydown" : "keyup";
+
+                    const event = new KeyboardEvent(eventType, {
+                        ...key,
+                        bubbles: true,
+                        cancelable: true
+                    });
+
+                    canvas.dispatchEvent(event);
+                }
+
+                function pressOnScreenButton(targetButton) {
+                    const includes = targetButton.getAttribute("data-osc-includes");
+                    if (includes) {
+                        includes.split(" ").forEach((id) => {
+                            const button = document.getElementById(id);
+                            const buttonName = button.getAttribute("data-tic-button");
+                            button.classList.add("osc-button-down");
+                            sendInput(buttonName, true);
+                        });
+                    } else {
+                        targetButton.classList.add("osc-button-down");
+                        const buttonName = targetButton.getAttribute("data-tic-button");
+                        sendInput(buttonName, true);
+                    }
+                }
+
+                function releaseOnScreenButton(currentActiveButton) {
+                    const includes = currentActiveButton.getAttribute("data-osc-includes");
+                    if (includes) {
+                        includes.split(" ").forEach((id) => {
+                            const button = document.getElementById(id);
+                            const buttonName = button.getAttribute("data-tic-button");
+                            button.classList.remove("osc-button-down");
+                            sendInput(buttonName, false);
+                        });
+                    } else {
+                        const buttonName = currentActiveButton.getAttribute("data-tic-button");
+                        currentActiveButton.classList.remove("osc-button-down");
+                        sendInput(buttonName, false);
+                    }
+                }
+
+                function touchMove(e) {
+                    e.preventDefault();
+                    const touches = e.changedTouches.length;
+
+                    resetHideOnScreenControlsTimeout();
+
+                    for (let i = 0; i < touches; i++) {
+                        const touch = e.changedTouches[i];
+                        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                        const identifier = touch.identifier;
+                        const currentActiveButton = currentActiveButtons[identifier];
+                        const targetButton = element ? element.closest(".osc-button") : null;
+
+                        if (targetButton !== currentActiveButton) {
+                            if (currentActiveButton) {
+                                releaseOnScreenButton(currentActiveButton);
+                            }
+
+                            if (targetButton) {
+                                pressOnScreenButton(targetButton);
+                            }
+                        }
+
+                        currentActiveButtons[identifier] = targetButton;
+                    }
+                }
+
+                function touchEnd(e) {
+                    const touches = e.changedTouches.length;
+
+                    resetHideOnScreenControlsTimeout();
+
+                    for (let i = 0; i < touches; i++) {
+                        const touch = e.changedTouches[i];
+                        const identifier = touch.identifier;
+                        const currentActiveButton = currentActiveButtons[identifier];
+
+                        console.log(currentActiveButton);
+
+                        if (currentActiveButton) {
+                            releaseOnScreenButton(currentActiveButton);
+
+                            currentActiveButtons[identifier] = undefined
+                        }
+                    }
+                }
+
+                osc.addEventListener("touchstart", touchMove, { passive: false });
+                osc.addEventListener("touchmove", touchMove, { passive: false });
+                osc.addEventListener("touchend", touchEnd, { passive: false });
+                osc.addEventListener("touchcancel", touchEnd, { passive: false });
+
+                function hideOnScreenControls() {
+                    document.getElementById("on-screen-controls").style.opacity = 0;
+                }
+
+                let timeoutHandle;
+                function resetHideOnScreenControlsTimeout() {
+                    document.getElementById("on-screen-controls").style.opacity = 0.5;
+                    window.clearTimeout(timeoutHandle);
+                    timeoutHandle = window.setTimeout(hideOnScreenControls, 10000);
+                }
+                resetHideOnScreenControlsTimeout();
+
+                function adjustAspectRatio() {
+                    // Sometimes inner sizes can be larger than the device's screen, this prevents that.
+                    // Might remove ternary if I'm confident that won't happen
+                    let width = (window.innerWidth < window.outerWidth) ? window.innerWidth : window.outerWidth;
+                    let height = (window.innerHeight < window.outerHeight) ? window.innerHeight : window.outerHeight;
+
+                    let xOscRatio = width / 48;
+                    let yOscRatio = height / 48;
+
+                    let xScreenRatio = width / 256;
+                    let yScreenRatio = height / 144;
+
+                    let oscRatio = (xOscRatio < yOscRatio) ? xOscRatio : yOscRatio;
+                    let screenRatio = (xScreenRatio < yScreenRatio) ? xScreenRatio : yScreenRatio;
+
+                    document.body.style.setProperty("--tic-osc-aspect-ratio", oscRatio);
+                    document.body.style.setProperty("--tic-screen-aspect-ratio", screenRatio);
+                }
+
+                adjustAspectRatio();
+                window.addEventListener("resize", adjustAspectRatio);
+            } else {
+                document.getElementById('canvas').focus()
+                document.querySelector('link[href="buttons.css"]').remove();
+                document.getElementById("on-screen-controls").remove();
+            }
+        }
+
+        if (displayStyle === 'none') 
+        {
+            let scriptTag = document.createElement('script'), // create a script tag
+            firstScriptTag = document.getElementsByTagName('script')[0]; // find the first script tag in the document
+            scriptTag.src = 'tic80.js'; // set the source of the script to your script
+            firstScriptTag.parentNode.insertBefore(scriptTag, firstScriptTag); // append the script to the DOM
+            // Focus canvas to ensure keyboard events are routed to the game
+            onScreenControls();
+        } else {
+            gameFrame.addEventListener('click', function() {
+                let scriptTag = document.createElement('script'), // create a script tag
+                firstScriptTag = document.getElementsByTagName('script')[0]; // find the first script tag in the document
+                scriptTag.src = 'tic80.js'; // set the source of the script to your script
+                firstScriptTag.parentNode.insertBefore(scriptTag, firstScriptTag); // append the script to the DOM
+                this.remove()
+                // Focus canvas to ensure keyboard events are routed to the game
+                onScreenControls();
+            });
+        }
+    </script>
+</body>
+</html>
