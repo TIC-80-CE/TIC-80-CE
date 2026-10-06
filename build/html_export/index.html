@@ -17,15 +17,31 @@
         /* #game-frame { display: none; } */
     </style>
 
-    <link type="style" href="buttons.css">
+    <link rel="stylesheet" href="buttons.css">
 </head>
-<body style="--tic-background: #1a1c2c; --tic-buttons: url('buttons.png'); margin:0; padding:0; background: var(--tic-background)">
+<body style="--tic-background: #1a1c2c; --tic-buttons: url('buttons.png'); --tic-osc-aspect-ratio: 3; margin:0; padding:0; background: var(--tic-background)">
 
     <div class="game" style="margin: 0; position: relative;">
 
-        <div id="game-frame" style="cursor: pointer; position: absolute; margin: 0 auto; opacity: 1; background: var(--tic-background); width: 100%; height: 100%;">
+        <div id="game-frame" style="z-index: 1; cursor: pointer; position: absolute; margin: 0 auto; opacity: 1; background: var(--tic-background); width: 100%; height: 100%;">
             <div style="text-align: center; color: white; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
                 <p style="margin: 0;">- CLICK TO PLAY -</p>
+            </div>
+        </div>
+
+        <div id="on-screen-controls">
+            <div id="dpad-region">
+                <div class="osc-button" style="--tic-button-index: 0; top: 0;"></div>
+                <div class="osc-button" style="--tic-button-index: 1; bottom: 0;"></div>
+                <div class="osc-button" style="--tic-button-index: 2; left: 0;"></div>
+                <div class="osc-button" style="--tic-button-index: 3; right: 0;"></div>
+            </div>
+
+            <div id="face-region">
+                <div class="osc-button" style="--tic-button-index: 4; bottom: 0;"></div>
+                <div class="osc-button" style="--tic-button-index: 5; right: 0;"></div>
+                <div class="osc-button" style="--tic-button-index: 6; left: 0;"></div>
+                <div class="osc-button" style="--tic-button-index: 7; top: 0;"></div>
             </div>
         </div>
 
@@ -93,6 +109,25 @@
         const gameFrame = document.getElementById('game-frame')
         const displayStyle = window.getComputedStyle(gameFrame).display;
 
+        function onScreenControls() {
+            function adjustAspectRatio() {
+                // Sometimes inner sizes can be larger than the device's screen, this prevents that.
+                // Might remove ternary if I'm confident that won't happen
+                let width = (window.innerWidth < window.outerWidth) ? window.innerWidth : window.outerWidth;
+                let height = (window.innerHeight < window.outerHeight) ? window.innerHeight : window.outerHeight;
+
+                let xOscRatio = width / 48;
+                let yOscRatio = height / 48;
+
+                let oscRatio = (xOscRatio < yOscRatio) ? xOscRatio : yOscRatio;
+
+                document.body.style.setProperty("--tic-osc-aspect-ratio", oscRatio);
+            }
+
+            adjustAspectRatio();
+            window.addEventListener("resize", adjustAspectRatio);
+        }
+
         if (displayStyle === 'none') 
         {
             let scriptTag = document.createElement('script'), // create a script tag
@@ -101,6 +136,7 @@
             firstScriptTag.parentNode.insertBefore(scriptTag, firstScriptTag); // append the script to the DOM
             // Focus canvas to ensure keyboard events are routed to the game
             document.getElementById('canvas').focus()
+            onScreenControls();
         } else {
             gameFrame.addEventListener('click', function() {
                 let scriptTag = document.createElement('script'), // create a script tag
@@ -110,7 +146,7 @@
                 this.remove()
                 // Focus canvas to ensure keyboard events are routed to the game
                 document.getElementById('canvas').focus()
-                document.getElementById('canvas').requestFullscreen();
+                onScreenControls();
             });
         }
     </script>
