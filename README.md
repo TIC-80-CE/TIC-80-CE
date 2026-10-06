@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/nesbox/TIC-80/workflows/Build/badge.svg)](https://github.com/nesbox/TIC-80/actions?query=workflow%3ABuild)
+[![Build Status](https://github.com/TIC-80-CE/TIC-80-CE/workflows/Build/badge.svg)](https://github.com/nesbox/TIC-80/actions?query=workflow%3ABuild)
 
 ![TIC-80](https://tic80.com/img/logo64.png)
 **TIC-80 TINY COMPUTER** — [tic80.com](https://tic80.com)
@@ -70,20 +70,16 @@ To make a retro styled game, the whole process of creation and execution takes p
 # Binary Downloads
 
 ## Stable Builds
-You can download compiled versions for the major operating systems directly from our [Releases](https://github.com/nesbox/TIC-80/releases) page.
+You can download compiled versions for the major operating systems directly from our [Releases](https://github.com/TIC-80-CE/TIC-80-CE/releases) page.
 
 ## Nightly Builds
-Can be downloaded from official [nightly.link](https://nightly.link/nesbox/TIC-80/workflows/build/main) page or from the [Github Actions](https://github.com/nesbox/TIC-80/actions?query=branch%3Amain) page.
+Can be downloaded from [nightly.link](https://nightly.link/TIC-80-CE/TIC-80-CE/workflows/build/main) page or from the [Github Actions](https://github.com/TIC-80-CE/TIC-80-CE/actions?query=branch%3Amain) page.
 
 ## Unofficial Builds
 Linux (arm64) builds can be downloaded from _aliceisjustplaying_ [nightly.link](https://nightly.link/aliceisjustplaying/TIC-80/workflows/build-linux-arm64/main?preview) page. Tested on Raspberry Pi OS (64-bit) (Bookworm), Asahi Linux (Fedora Remix), Ubuntu 22.04 and Fedora 40.
 
 # Pro Version
-To help support TIC-80 development, we have a [PRO Version](https://nesbox.itch.io/tic80).
-
-This version has a few additional features and binaries can only be downloaded on our itch.io page.
-
-For users who can't afford the program can easily build the pro version from the source code using `cmake .. -DBUILD_PRO=On` command.
+This version has a few additional features. Users can easily build the pro version from the source code using `cmake .. -DBUILD_PRO=On` command.
 
 ## Pro Features
 - Save/load cartridges in text format, and create your game in any editor you want, also useful for version control systems.
@@ -93,13 +89,13 @@ For users who can't afford the program can easily build the pro version from the
 # Community
 You can play and share games, tools and music at [tic80.com/play](https://tic80.com/play).
 
-The community also hangs out and discusses on [Telegram](https://t.me/tic80) or [Discord](https://discord.gg/HwZDw7n4dN).
+The community for this fork is on [Discord](https://discord.gg/HwZDw7n4dN), with development of the Community Edition discussed in the #tic-80-dev channel.
 
 # Contributing
-You can contribute by reporting a bug or requesting a new feature on our [Issues](https://github.com/nesbox/TIC-80/issues) page.
-Keep in mind when engaging on a discussion to follow our [Code of Conduct](https://github.com/nesbox/TIC-80/blob/main/CODE_OF_CONDUCT.md).
+You can contribute by reporting a bug or requesting a new feature on our [Issues](https://github.com/TIC-80-CE/TIC-80-CE/issues) page.
+Keep in mind when engaging on a discussion to follow our [Code of Conduct](https://github.com/TIC-80-CE/TIC-80-CE/blob/main/CODE_OF_CONDUCT.md).
 
-You can also contribute by reviewing or improving our [Wiki](https://github.com/nesbox/TIC-80/wiki).
+You can also contribute by reviewing or improving the official [Wiki](https://github.com/nesbox/TIC-80/wiki).
 The wiki holds TIC-80 documentation, code snippets and game development tutorials.
 
 # Build instructions
@@ -128,7 +124,7 @@ The build process has been tested on Windows 11 64-bit (x64); all this should ru
 - Open a new elevated Command Prompt and run the following commands:
 
 ```
-git clone --recursive https://github.com/nesbox/TIC-80 && cd .\TIC-80\build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80\build
 copy /y .\build\janet\janetconf.h .\vendor\janet\src\conf\janetconf.h
 cmake -G "Visual Studio 16 2019" -A Win32 -T v141_xp -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_WITH_ALL=On ..
 cmake --build . --parallel
@@ -161,7 +157,7 @@ winget install Git.Git Kitware.CMake Microsoft.VisualStudio.2019.BuildTools Ruby
 - Open a new elevated prompt and run the following commands:
 
 ```
-git clone --recursive https://github.com/nesbox/TIC-80 && cd .\TIC-80\build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80\build
 cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On ..
 cmake --build . --parallel
 ```
@@ -187,7 +183,7 @@ winget install Git.Git Kitware.CMake RubyInstallerTeam.RubyWithDevKit.2.7
 - Open a new elevated prompt and run the following commands:
 
 ```
-git clone --recursive https://github.com/nesbox/TIC-80 && cd .\TIC-80\build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80\build
 cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On ..
 $numCPUs = [Environment]::ProcessorCount
 mingw32-make "-j$numCPUs"
@@ -213,7 +209,7 @@ sudo rm /usr/share/keyrings/kitware-archive-keyring.gpg
 sudo apt-get install kitware-archive-keyring
 
 sudo apt update && sudo apt -y install build-essential cmake git libpipewire-0.3-dev libwayland-dev libsdl2-dev ruby-dev libglvnd-dev libglu1-mesa-dev freeglut3-dev libcurl4-openssl-dev
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On .. && cmake --build . --parallel
 ```
 
@@ -224,7 +220,7 @@ Run the following commands from a terminal:
 
 ```
 sudo apt update && sudo apt -y install build-essential cmake git libpipewire-0.3-dev libwayland-dev libsdl2-dev ruby-dev libcurl4-openssl-dev libglvnd-dev libglu1-mesa-dev freeglut3-dev
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On -DBUILD_STATIC=On .. && cmake --build . --parallel
 ```
 
@@ -234,7 +230,7 @@ Install with [Install Instructions](#install-instructions)
 run the following commands in the Terminal
 ```
 sudo pacman -S cmake ruby mesa libglvnd glu
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_WITH_ALL=On .. && cmake --build . --parallel
 ```
 
@@ -247,7 +243,7 @@ run the following commands in the Terminal
 ```
 sudo dnf -y groupinstall "Development Tools" "Development Libraries"
 sudo dnf -y install ruby rubygem-{tk{,-doc},rake,test-unit} cmake libglvnd-devel libglvnd-gles freeglut-devel clang libXext-devel SDL_sound pipewire-devel pipewire-jack-audio-connection-kit-devel pulseaudio-libs-devel
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DCMAKE_CXX_COMPILER=clang++ -DSDL_ALSA=On -DBUILD_WITH_ALL=On ..
 ```
 
@@ -272,7 +268,7 @@ Run the following commands from a terminal:
 sudo zypper refresh
 sudo zypper install --no-confirm --type pattern devel_basis
 sudo zypper install --no-confirm cmake glu-devel libXext-devel pipewire-devel libcurl-devel
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On .. && cmake --build . --parallel
 ```
 
@@ -285,7 +281,7 @@ Run the following commands from a terminal:
 
 ```
 sudo apt update && sudo apt -y install cmake libpipewire-0.3-dev libwayland-dev libsdl2-dev ruby-dev libcurl4-openssl-dev
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On .. && cmake --build . --parallel 2
 ```
 
@@ -312,14 +308,14 @@ sudo apt-get dist-upgrade
 # install software
 sudo apt-get install git build-essential ruby-full libsdl2-dev zlib1g-dev
 sudo apt-get install -t jessie-backports liblua5.3-dev
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_WITH_ALL=On ..
 
 # install software ubuntu 22.04.3 LTS
 sudo apt-get install git build-essential ruby-full libsdl2-dev zlib1g-dev
 sudo apt-get install liblua5.3-dev
 sudo apt-get install libcurl4-openssl-dev
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_WITH_ALL=On ..
 ```
 
@@ -336,7 +332,7 @@ install `Command Line Tools for Xcode` and `brew` package manager
 run the following commands in the Terminal
 ```
 brew install git cmake
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_WITH_ALL=On -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
 make -j4
 ```
@@ -348,7 +344,7 @@ cp -f macosx/tic80.plist ~/Applications/tic80dev.app/Contents/Info.plist
 cp -f macosx/tic80.icns ~/Applications/tic80dev.app/Contents/Resources
 cat > ~/Applications/tic80dev.app/Contents/MacOS/tic80 <<EOF
 #!/bin/sh
-exec /Users/nesbox/projects/TIC-80/build/bin/tic80 --skip >/dev/null
+exec /Users/[username]/projects/TIC-80/build/bin/tic80 --skip >/dev/null
 EOF
 chmod +x ~/Applications/tic80dev.app/Contents/MacOS/tic80
 ```
@@ -359,7 +355,7 @@ update the launch arguments.
 run the following commands in the Terminal
 ```
 sudo pkg install gcc git cmake ruby libglvnd libglu freeglut mesa-devel mesa-dri alsa-lib
-git clone --recursive https://github.com/nesbox/TIC-80 && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
 cmake -DBUILD_WITH_ALL=On ..
 make -j4
 ```
