@@ -145,9 +145,13 @@ static s32 getLinesCount(Code* code)
 
 static void getWidths(Code* code, s32* gutterWidthOut, s32* codeWidthOut)
 {
-    int charCount = (int)log10(getLinesCount(code)) + 1;
-    int gutterWidth = code->lineNumbers ? 1 + charCount * TIC_ALTFONT_WIDTH : MIN_GUTTER_WIDTH;
-    gutterWidth = MAX(gutterWidth, MIN_GUTTER_WIDTH);
+    int gutterWidth = MIN_GUTTER_WIDTH;
+    if (code->lineNumbers)
+    {
+        int charCount = (int)log10(getLinesCount(code)) + 1;
+        gutterWidth = MAX(1 + charCount * TIC_ALTFONT_WIDTH, MIN_GUTTER_WIDTH);
+    }
+
     int codeWidth = TIC80_WIDTH - gutterWidth;
 
     if (gutterWidthOut) *gutterWidthOut = gutterWidth;
@@ -249,7 +253,7 @@ static void drawGutter(Code* code)
 
         s32 line = mouseOverLine = (tic_api_mouse(tic).y - rect.y) / STUDIO_TEXT_HEIGHT;
 
-        drawBitIcon(code->studio, tic_icon_bookmark, rect.x + gutterWidth - TIC_SPRITESIZE, rect.y + line * STUDIO_TEXT_HEIGHT - 1, tic_color_dark_grey);
+        drawBitIcon(code->studio, tic_icon_bookmark, rect.x + gutterWidth - TIC_SPRITESIZE + 1, rect.y + line * STUDIO_TEXT_HEIGHT - 1, tic_color_dark_grey);
 
         if(checkMouseClick(code->studio, &rect, tic_mouse_left))
             toggleBookmark(code, getPosByLine(code->src, line + code->scroll.y));
@@ -269,11 +273,11 @@ static void drawGutter(Code* code)
     {
         if(syntaxPointer++->bookmark)
         {
-            drawBitIcon(code->studio, tic_icon_bookmark, rect.x + gutterWidth - TIC_SPRITESIZE, rect.y + y * STUDIO_TEXT_HEIGHT, tic_color_black);
-            drawBitIcon(code->studio, tic_icon_bookmark, rect.x + gutterWidth - TIC_SPRITESIZE, rect.y + y * STUDIO_TEXT_HEIGHT - 1, tic_color_yellow);
+            drawBitIcon(code->studio, tic_icon_bookmark, rect.x + gutterWidth - TIC_SPRITESIZE + 1, rect.y + y * STUDIO_TEXT_HEIGHT, tic_color_black);
+            drawBitIcon(code->studio, tic_icon_bookmark, rect.x + gutterWidth - TIC_SPRITESIZE + 1, rect.y + y * STUDIO_TEXT_HEIGHT - 1, tic_color_yellow);
             bookmarkDrawn = true;
         }
-        else if (y != mouseOverLine && !bookmarkDrawn)
+        else if (code->lineNumbers && y != mouseOverLine && !bookmarkDrawn)
         {
             int lineNumber = y + 1 + code->scroll.y;
             snprintf(buf, sizeof(buf), "%d", lineNumber);
@@ -3131,6 +3135,7 @@ static void processKeyboard(Code* code)
             else if(shift && sym && sym == '(')                 emacsMode? sexpify(code) : noop;
             else if(keyWasPressed(code->studio, tic_key_slash)) emacsMode ? redo(code) : noop;
             else if(keyWasPressed(code->studio, tic_key_semicolon)) emacsMode ? commentLine(code) : noop;
+            else if(keyWasPressed(code->studio, tic_key_l) && !ctrl) code->lineNumbers = !code->lineNumbers;
             else altHandled = false;
         }
 
