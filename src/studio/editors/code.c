@@ -3951,7 +3951,7 @@ void initCode(Code* code, Studio* studio)
         .matchedDelim = NULL,
         .altFont = firstLoad ? getConfig(studio)->theme.code.altFont : code->altFont,
         .shadowText = getConfig(studio)->theme.code.shadow,
-        .lineNumbers = true,
+        .lineNumbers = firstLoad ? getConfig(studio)->theme.code.lineNumbers : code->lineNumbers,
         .anim =
         {
             .idle = {.done = emptyDone,},
