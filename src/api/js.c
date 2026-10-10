@@ -217,6 +217,38 @@ static JSValue js_rectb(JSContext *ctx, JSValueConst this_val, s32 argc, JSValue
     return JS_UNDEFINED;
 }
 
+static JSValue js_rrect(JSContext *ctx, JSValueConst this_val, s32 argc, JSValueConst *argv)
+{
+    s32 x = getInteger2(ctx, argv[0], 0);
+    s32 y = getInteger2(ctx, argv[1], 0);
+    s32 w = getInteger2(ctx, argv[2], 0);
+    s32 h = getInteger2(ctx, argv[3], 0);
+    s32 color = getInteger2(ctx, argv[4], 0);
+    s32 radius = getInteger2(ctx, argv[5], 0);
+    float exponent = argc >= 7 ? getNumber(ctx, argv[6]) : 2;
+
+    tic_core* core = getCore(ctx); tic_mem* tic = (tic_mem*)core;
+    core->api.rrect(tic, x, y, w, h, color, radius, exponent);
+
+    return JS_UNDEFINED;
+}
+
+static JSValue js_rrectb(JSContext *ctx, JSValueConst this_val, s32 argc, JSValueConst *argv)
+{
+    s32 x = getInteger2(ctx, argv[0], 0);
+    s32 y = getInteger2(ctx, argv[1], 0);
+    s32 w = getInteger2(ctx, argv[2], 0);
+    s32 h = getInteger2(ctx, argv[3], 0);
+    s32 color = getInteger2(ctx, argv[4], 0);
+    s32 radius = getInteger2(ctx, argv[5], 0);
+    float exponent = argc >= 7 ? getNumber(ctx, argv[6]) : 2;
+
+    tic_core* core = getCore(ctx); tic_mem* tic = (tic_mem*)core;
+    core->api.rrectb(tic, x, y, w, h, color, radius, exponent);
+
+    return JS_UNDEFINED;
+}
+
 static JSValue js_spr(JSContext *ctx, JSValueConst this_val, s32 argc, JSValueConst *argv)
 {
     static u8 colors[TIC_PALETTE_SIZE];
