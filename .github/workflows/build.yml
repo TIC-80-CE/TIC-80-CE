@@ -2,9 +2,6 @@ name: Build
 
 on: [push, pull_request, workflow_dispatch]
 
-env:
-  CMAKE_BUILD_PARALLEL_LEVEL: 2
-
 jobs:
   # === Windows ===
   windows:
@@ -393,7 +390,8 @@ jobs:
   # === MacOS 14 / arm64 ===
   macos-arm64:
     runs-on: macos-14
-
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: 2
     steps:
       - uses: actions/checkout@v6
         with:
@@ -426,7 +424,8 @@ jobs:
   # === MacOS 15 / x86_64 ===
   macos:
     runs-on: macos-15-intel
-
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: 2
     steps:
       - uses: actions/checkout@v6
         with:
@@ -617,6 +616,6 @@ jobs:
           echo "$RESULTS" | jq -e '
             all(.[]; .result == "success")
           ' > /dev/null || {
-          echo "One or more required jobs failed or were skipped."
-          exit 1
-        }
+            echo "One or more required jobs failed or were skipped."
+            exit 1
+          }
