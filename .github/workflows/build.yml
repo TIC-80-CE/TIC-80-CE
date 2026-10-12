@@ -1,6 +1,9 @@
 name: Build
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 2
 
 jobs:
   # === Windows ===
@@ -594,3 +597,26 @@ jobs:
           name: "tic80-html"
           path: |
             build/bin/*
+
+  # === Branch Protection ===
+  all_checks:
+    name: All checks passed
+    if: ${{ always() }}
+    needs:
+      - windows-mingw
+      - macos-arm64
+      - linux-gcc12-glibc235
+      - html
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all jobs succeeded
+        if: ${{ always() }}
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          echo "$RESULTS" | jq -e '
+            all(.[]; .result == "success")
+          ' > /dev/null || {
+          echo "One or more required jobs failed or were skipped."
+          exit 1
+        }
