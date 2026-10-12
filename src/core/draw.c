@@ -30,6 +30,9 @@
 #include <float.h>
 
 #define TRANSPARENT_COLOR 255
+#define SUPERELLIPSE_MIN_EXPONENT 0.3
+#define SUPERELLIPSE_MAX_EXPONENT 5
+#define SUPERELLIPSE_CIRCLE_EXPONENT 2
 
 typedef void(*PixelFunc)(tic_mem* memory, s32 x, s32 y, u8 color);
 
@@ -532,26 +535,26 @@ static void drawEllipse(tic_mem* memory, s32 x0, s32 y0, s32 x1, s32 y1, u8 colo
     }
 }
 
-static void drawSuperEllipse(tic_mem* memory, s32 x0, s32 y0, s32 x1, s32 y1, int radius, float exponent, u8 color, PixelFunc pix)
+static void drawSuperEllipseCapsule(tic_mem* memory, s32 x0, s32 y0, s32 x1, s32 y1, int radius, float exponent, u8 color, PixelFunc pix)
 {
     if(x0 > x1 || y0 > y1)
         return;
 
     s32 w = abs(x1 - x0), h = abs(y1 - y0);
 
-    if (radius > w / 2) radius = w / 2;
-    if (radius > h / 2) radius = h / 2;
+    // non positive radius should default to half the smallest dimension
+    if (radius <= 0) radius = MIN(w, h) / 2;
+    // radius should never be more than half the smallest dimension
+    if (radius > MIN(w, h) / 2) radius = MIN(w, h) / 2;
 
+    // fill the edges for a tall superellipse capsule
     for (int yy = y0 + radius; yy < y1 - radius; yy++)
     {
         pix(memory, x0, yy, color);
         pix(memory, x1, yy, color);
     }
 
-    if (radius == 0) return;
-
-    // 2 is circular, and anything more than 5 isn't that noticeable
-    exponent = CLAMP(exponent, 2, 5);
+    exponent = CLAMP(exponent, SUPERELLIPSE_MIN_EXPONENT, SUPERELLIPSE_MAX_EXPONENT);
 
     float r = (float)radius;
     float rn = powf(r, exponent);
@@ -591,7 +594,7 @@ static void drawSuperEllipse(tic_mem* memory, s32 x0, s32 y0, s32 x1, s32 y1, in
 
         if (eh <= ed && eh <= ev && x < y - 1)
             x++;
-        else if (ev <= ed)
+        else if (ev <= ed && x < y - 1)
             y--;
         else
         {
@@ -663,7 +666,7 @@ void tic_api_ellib(tic_mem* memory, s32 x, s32 y, s32 a, s32 b, u8 color)
 void tic_api_rrect(tic_mem* memory, s32 x, s32 y, s32 width, s32 height, u8 color, s32 radius, float exponent)
 {
     initSidesBuffer();
-    drawSuperEllipse(memory, x, y, x + width, y + height, radius, exponent, 0, setElliSide);
+    drawSuperEllipseCapsule(memory, x, y, x + width, y + height, radius, exponent, 0, setElliSide);
     drawSidesBuffer(memory, y, y + height + 1, mapColor(memory, color));
 }
 
@@ -671,7 +674,7 @@ void tic_api_rrectb(tic_mem* memory, s32 x, s32 y, s32 width, s32 height, u8 col
 {
     initSidesBuffer();
     color = mapColor(memory, color);
-    drawSuperEllipse(memory, x, y, x + width, y + height, radius, exponent, color, setElliBoth);
+    drawSuperEllipseCapsule(memory, x, y, x + width, y + height, radius, exponent, color, setElliBoth);
     drawSidesBuffer(memory, y, y, color);
     drawSidesBuffer(memory, y + height, y + height, color);
 }
