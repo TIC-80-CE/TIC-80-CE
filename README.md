@@ -124,13 +124,13 @@ The build process has been tested on Windows 11 64-bit (x64); all this should ru
 - Open a new elevated Command Prompt and run the following commands:
 
 ```
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80\build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80-CE\build
 copy /y .\build\janet\janetconf.h .\vendor\janet\src\conf\janetconf.h
 cmake -G "Visual Studio 16 2019" -A Win32 -T v141_xp -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_WITH_ALL=On ..
 cmake --build . --parallel
 ```
 
-You'll find `tic80.exe` in `TIC-80\build\bin`.
+You'll find `tic80.exe` in `TIC-80-CE\build\bin`.
 
 #### Windows 10 / 11 64-bit (x64)
 This guide assumes you're running PowerShell with an elevated prompt.
@@ -157,12 +157,12 @@ winget install Git.Git Kitware.CMake Microsoft.VisualStudio.2019.BuildTools Ruby
 - Open a new elevated prompt and run the following commands:
 
 ```
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80\build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80-CE\build
 cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On ..
 cmake --build . --parallel
 ```
 
-You'll find `tic80.exe` in `TIC-80\build\bin`.
+You'll find `tic80.exe` in `TIC-80-CE\build\bin`.
 
 ### MSYS2 / MINGW
 
@@ -183,13 +183,13 @@ winget install Git.Git Kitware.CMake RubyInstallerTeam.RubyWithDevKit.2.7
 - Open a new elevated prompt and run the following commands:
 
 ```
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80\build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd .\TIC-80-CE\build
 cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=MinSizeRel -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On ..
 $numCPUs = [Environment]::ProcessorCount
 mingw32-make "-j$numCPUs"
 ```
 
-You'll find `tic80.exe` in `TIC-80\build\bin`.
+You'll find `tic80.exe` in `TIC-80-CE\build\bin`.
 
 ## Linux
 
@@ -209,7 +209,7 @@ sudo rm /usr/share/keyrings/kitware-archive-keyring.gpg
 sudo apt-get install kitware-archive-keyring
 
 sudo apt update && sudo apt -y install build-essential cmake git libpipewire-0.3-dev libwayland-dev libsdl2-dev ruby-dev libglvnd-dev libglu1-mesa-dev freeglut3-dev libcurl4-openssl-dev
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On .. && cmake --build . --parallel
 ```
 
@@ -220,7 +220,7 @@ Run the following commands from a terminal:
 
 ```
 sudo apt update && sudo apt -y install build-essential cmake git libpipewire-0.3-dev libwayland-dev libsdl2-dev ruby-dev libcurl4-openssl-dev libglvnd-dev libglu1-mesa-dev freeglut3-dev
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On -DBUILD_STATIC=On .. && cmake --build . --parallel
 ```
 
@@ -230,7 +230,7 @@ Install with [Install Instructions](#install-instructions)
 run the following commands in the Terminal
 ```
 sudo pacman -S cmake ruby mesa libglvnd glu
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_WITH_ALL=On .. && cmake --build . --parallel
 ```
 
@@ -243,7 +243,7 @@ run the following commands in the Terminal
 ```
 sudo dnf -y groupinstall "Development Tools" "Development Libraries"
 sudo dnf -y install ruby rubygem-{tk{,-doc},rake,test-unit} cmake libglvnd-devel libglvnd-gles freeglut-devel clang libXext-devel SDL_sound pipewire-devel pipewire-jack-audio-connection-kit-devel pulseaudio-libs-devel
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DCMAKE_CXX_COMPILER=clang++ -DSDL_ALSA=On -DBUILD_WITH_ALL=On ..
 ```
 
@@ -268,7 +268,7 @@ Run the following commands from a terminal:
 sudo zypper refresh
 sudo zypper install --no-confirm --type pattern devel_basis
 sudo zypper install --no-confirm cmake glu-devel libXext-devel pipewire-devel libcurl-devel
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On .. && cmake --build . --parallel
 ```
 
@@ -281,7 +281,7 @@ Run the following commands from a terminal:
 
 ```
 sudo apt update && sudo apt -y install cmake libpipewire-0.3-dev libwayland-dev libsdl2-dev ruby-dev libcurl4-openssl-dev
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_SDLGPU=On -DBUILD_WITH_ALL=On .. && cmake --build . --parallel 2
 ```
 
@@ -308,14 +308,14 @@ sudo apt-get dist-upgrade
 # install software
 sudo apt-get install git build-essential ruby-full libsdl2-dev zlib1g-dev
 sudo apt-get install -t jessie-backports liblua5.3-dev
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_WITH_ALL=On ..
 
 # install software ubuntu 22.04.3 LTS
 sudo apt-get install git build-essential ruby-full libsdl2-dev zlib1g-dev
 sudo apt-get install liblua5.3-dev
 sudo apt-get install libcurl4-openssl-dev
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_WITH_ALL=On ..
 ```
 
@@ -332,7 +332,7 @@ install `Command Line Tools for Xcode` and `brew` package manager
 run the following commands in the Terminal
 ```
 brew install git cmake
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_WITH_ALL=On -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
 make -j4
 ```
@@ -344,7 +344,7 @@ cp -f macosx/tic80.plist ~/Applications/tic80dev.app/Contents/Info.plist
 cp -f macosx/tic80.icns ~/Applications/tic80dev.app/Contents/Resources
 cat > ~/Applications/tic80dev.app/Contents/MacOS/tic80 <<EOF
 #!/bin/sh
-exec /Users/[username]/projects/TIC-80/build/bin/tic80 --skip >/dev/null
+exec /Users/[username]/projects/TIC-80-CE/build/bin/tic80 --skip >/dev/null
 EOF
 chmod +x ~/Applications/tic80dev.app/Contents/MacOS/tic80
 ```
@@ -355,7 +355,7 @@ update the launch arguments.
 run the following commands in the Terminal
 ```
 sudo pkg install gcc git cmake ruby libglvnd libglu freeglut mesa-devel mesa-dri alsa-lib
-git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80/build
+git clone --recursive https://github.com/TIC-80-CE/TIC-80-CE && cd TIC-80-CE/build
 cmake -DBUILD_WITH_ALL=On ..
 make -j4
 ```
@@ -369,7 +369,7 @@ sudo ln -s /usr/local/lib/dri/swrast_dri.so /usr/local/lib/dri-devel/
 # Install instructions
 
 ## Linux
-- To make an executable file `./tic80` without installation run `make` and locate the output in `TIC-80/build/bin`.
+- To make an executable file `./tic80` without installation run `make` and locate the output in `TIC-80-CE/build/bin`.
 - To install system-wide run `sudo make install`
 - You can append `-j4` if you have a modern system, or `-j2` for a Raspberry Pi to speed up the process.
 
