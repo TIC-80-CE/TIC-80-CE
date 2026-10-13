@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/TIC-80-CE/TIC-80-CE/workflows/Build/badge.svg)](https://github.com/nesbox/TIC-80/actions?query=workflow%3ABuild)
+[![Build Status](https://github.com/TIC-80-CE/TIC-80-CE/workflows/Build/badge.svg)](https://github.com/TIC-80-CE/TIC-80-CE/actions?query=workflow%3ABuild)
 
 ![TIC-80](https://tic80.com/img/logo64.png)
 **TIC-80 TINY COMPUTER** — [tic80.com](https://tic80.com)
