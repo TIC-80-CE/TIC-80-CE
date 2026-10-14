@@ -398,6 +398,40 @@ static Janet janet_rectb(int32_t argc, Janet* argv)
     return janet_wrap_nil();
 }
 
+static Janet janet_rrect(int32_t argc, Janet* argv)
+{
+    janet_arity(argc, 6, 7);
+
+    s32 x = (s32)janet_getinteger(argv, 0);
+    s32 y = (s32)janet_getinteger(argv, 1);
+    s32 width = (s32)janet_getinteger(argv, 2);
+    s32 height = (s32)janet_getinteger(argv, 3);
+    u8 color = (u8)janet_getinteger(argv, 4);
+    s32 radius = (s32)janet_getinteger(argv, 5);
+    float exponent = argc >= 7 ? (float)janet_getnumber(argv, 6) : 2.0f;
+
+    tic_core* core = getJanetMachine(); tic_mem* tic = (tic_mem*)core;
+    core->api.rrect(tic, x, y, width, height, color, radius, exponent);
+    return janet_wrap_nil();
+}
+
+static Janet janet_rrectb(int32_t argc, Janet* argv)
+{
+    janet_arity(argc, 6, 7);
+
+    s32 x = (s32)janet_getinteger(argv, 0);
+    s32 y = (s32)janet_getinteger(argv, 1);
+    s32 width = (s32)janet_getinteger(argv, 2);
+    s32 height = (s32)janet_getinteger(argv, 3);
+    u8 color = (u8)janet_getinteger(argv, 4);
+    s32 radius = (s32)janet_getinteger(argv, 5);
+    float exponent = argc >= 7 ? (float)janet_getnumber(argv, 6) : 2.0f;
+
+    tic_core* core = getJanetMachine(); tic_mem* tic = (tic_mem*)core;
+    core->api.rrectb(tic, x, y, width, height, color, radius, exponent);
+    return janet_wrap_nil();
+}
+
 static Janet janet_spr(int32_t argc, Janet* argv)
 {
     janet_arity(argc, 3, 9);
