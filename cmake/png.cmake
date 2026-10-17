@@ -44,3 +44,5 @@ target_include_directories(png
     PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
     PRIVATE ${THIRDPARTY_DIR}/zlib
     INTERFACE ${THIRDPARTY_DIR}/libpng)
+
+target_link_libraries(png PRIVATE zlib)
